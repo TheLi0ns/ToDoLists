@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="100">
+
+    <EditText
+        android:id="@+id/ListItemName"
+        android:layout_width="0dp"
+        android:layout_height="50sp"
+        android:layout_weight="70"
+        android:gravity="center_vertical"
+        android:singleLine="true"
+        android:text="TextView"
+        android:textSize="20sp"
+        android:paddingStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:focusable="false"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:background="@null"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="50sp"
+        android:layout_weight="30">
+
+        <TextView
+            android:id="@+id/stateName"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:text="in corso"
+            android:layout_marginBottom="5dp"
+            android:paddingStart="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/deleteListItemBtn" />
+
+        <Button
+            android:id="@+id/deleteListItemBtn"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:backgroundTint="@color/white"
+            android:text="X"
+            android:textSize="10sp"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
