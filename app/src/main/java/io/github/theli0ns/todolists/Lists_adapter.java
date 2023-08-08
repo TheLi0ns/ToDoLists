@@ -18,8 +18,8 @@ import java.util.List;
 public class Lists_adapter extends RecyclerView.Adapter<Lists_adapter.ViewHolder> {
 
     private List<ListRecord> lists;
-    private Context context;
-    private ListSelectListener listSelectListener;
+    private final Context context;
+    private final ListSelectListener listSelectListener;
 
     public Lists_adapter(List<ListRecord> lists, ListSelectListener listSelectListener, Context context) {
         this.lists = lists;
@@ -52,6 +52,7 @@ public class Lists_adapter extends RecyclerView.Adapter<Lists_adapter.ViewHolder
         });
 
         holder.cardView.setOnClickListener(view -> listSelectListener.onItemClicked(list));
+        holder.cardView.setOnLongClickListener(view -> listSelectListener.onItemLongClicked(list));
     }
 
     @Override
@@ -67,9 +68,9 @@ public class Lists_adapter extends RecyclerView.Adapter<Lists_adapter.ViewHolder
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            name_textview = itemView.findViewById(R.id.ListName);
+            name_textview = itemView.findViewById(R.id.List_name);
             cardView = itemView.findViewById(R.id.Card);
-            deleteList_btn = itemView.findViewById(R.id.deleteListBtn);
+            deleteList_btn = itemView.findViewById(R.id.List_deleteBtn);
         }
     }
 }

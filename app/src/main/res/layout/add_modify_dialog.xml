@@ -6,15 +6,16 @@
     android:padding="30dp">
 
     <EditText
-        android:id="@+id/newlistName"
+        android:id="@+id/dialog_inputText"
         android:layout_width="match_parent"
         android:layout_height="74dp"
         android:hint="Enter name"
         android:maxLength="100"
-        android:textAlignment="center" />
+        android:textAlignment="center"
+        android:inputType="text"/>
 
     <Spinner
-        android:id="@+id/colorPicker"
+        android:id="@+id/dialog_spinner"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:spinnerMode="dropdown"

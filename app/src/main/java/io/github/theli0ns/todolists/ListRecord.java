@@ -24,8 +24,16 @@ public class ListRecord {
         return ID;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
+    }
+
+    public void setColor(ListColors color) {
+        this.color = color;
     }
 
     public ListColors getColor(){

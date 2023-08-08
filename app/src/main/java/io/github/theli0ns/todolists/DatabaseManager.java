@@ -62,6 +62,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return ID;
     }
 
+    public int updateList(ListRecord list){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseSchema.Lists.NAME_COLUMN, list.getName());
+        values.put(DatabaseSchema.Lists.COLOR_COLUMN, list.getColor().name);
+
+        String whereClause = DatabaseSchema.Lists._ID + "=" + list.getID();
+        int rows_updated = db.update(DatabaseSchema.Lists.TABLE_NAME, values, whereClause, null);
+
+        db.close();
+        return rows_updated;
+    }
+
     public boolean deleteList(ListRecord list){
         SQLiteDatabase db = getWritableDatabase();
 
@@ -110,6 +123,20 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         db.close();
         return success;
+    }
+
+    public int updateListItem(ListItemRecord listItem){
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatabaseSchema.ListsItems.LIST_ID_COLUMN, listItem.getList_id());
+        values.put(DatabaseSchema.ListsItems.TEXT_COLUMN, listItem.getText());
+        values.put(DatabaseSchema.ListsItems.STATE_COLUMN, listItem.getState());
+
+        String whereClause = DatabaseSchema.ListsItems._ID + "=" + listItem.getID();
+        int rows_updated = db.update(DatabaseSchema.ListsItems.TABLE_NAME, values, whereClause, null);
+
+        db.close();
+        return rows_updated;
     }
 
     public boolean deleteListItem(ListItemRecord listItem){

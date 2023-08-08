@@ -14,7 +14,7 @@ public class ListItemRecord {
         IN_PROGRESS("In progress"),
         COMPLETED("Done");
 
-        private String name;
+        private final String name;
 
         States(String name) {
             this.name = name;
@@ -50,12 +50,24 @@ public class ListItemRecord {
         return ID;
     }
 
+    public void setList_id(long list_id) {
+        this.list_id = list_id;
+    }
+
     public long getList_id() {
         return list_id;
     }
 
+    public void setText(String text) {
+        this.text = text;
+    }
+
     public String getText() {
         return text;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 
     public int getState() {
