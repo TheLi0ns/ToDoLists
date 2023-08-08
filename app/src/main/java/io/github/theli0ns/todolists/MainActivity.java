@@ -1,12 +1,9 @@
 package io.github.theli0ns.todolists;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -40,37 +37,31 @@ public class MainActivity extends AppCompatActivity implements ListSelectListene
     }
 
     public void addNewList(View v){
-        AlertDialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter new list");
-        View view1 = getLayoutInflater().inflate(R.layout.add_modify_dialog, null);
+        TextnSpinnerDialog dialog = new TextnSpinnerDialog(this, "Enter new list");
+        dialog.setSpinnerValues(ListColors.getNamesArray());
 
-        EditText listName_input = view1.findViewById(R.id.dialog_inputText);
+        dialog.setPositiveButton("add", (dialogInterface, i) -> {
+            String name = dialog.getInputtedText();
 
-        Spinner color_picker_spinner = view1.findViewById(R.id.dialog_spinner);
-        color_picker_spinner.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                ListColors.getNamesArray()));
+            if(TextUtils.isEmpty(name)){
+                Toast.makeText(this, "Error name not inserted", Toast.LENGTH_LONG).show();
+                return;
+            }
 
-
-        builder.setView(view1);
-        builder.setPositiveButton("add", (dialogInterface, i) -> {
-            ListRecord newList = new ListRecord(listName_input.getText().toString(),
-                    ListColors.values()[color_picker_spinner.getSelectedItemPosition()]);
+            ListRecord newList = new ListRecord(name,
+                    ListColors.values()[dialog.getSelectedSpinnerPosition()]);
 
             long id = db.addNewList(newList);
             if(id != -1){
                 newList.setID(id);
                 lists.add(newList);
-                lists_adapter.notifyDataSetChanged();
+                lists_adapter.notifyItemInserted(lists.size()-1);
             }else{
                 Toast.makeText(this, "Error adding new list", Toast.LENGTH_LONG).show();
             }
-
         });
 
-        dialog = builder.create();
-        dialog.show();
+        dialog.create().show();
     }
 
     @Override
@@ -85,25 +76,22 @@ public class MainActivity extends AppCompatActivity implements ListSelectListene
     public boolean onItemLongClicked(ListRecord listRecord) {
         int pos = lists.indexOf(listRecord);
 
-        AlertDialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Modify list");
-        View view1 = getLayoutInflater().inflate(R.layout.add_modify_dialog, null);
+        TextnSpinnerDialog dialog = new TextnSpinnerDialog(this, "Modify list");
 
-        EditText listName_input = view1.findViewById(R.id.dialog_inputText);
-        listName_input.setText(listRecord.getName());
+        dialog.setDefaultText(listRecord.getName());
+        dialog.setSpinnerValues(ListColors.getNamesArray());
+        dialog.setDefaultSpinnerPosition(Arrays.asList(ListColors.values()).indexOf(listRecord.getColor()));
 
-        Spinner color_picker_spinner = view1.findViewById(R.id.dialog_spinner);
-        color_picker_spinner.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                ListColors.getNamesArray()));
-        color_picker_spinner.setSelection(Arrays.asList(ListColors.values()).indexOf(listRecord.getColor()));
+        dialog.setPositiveButton("ok", (dialogInterface, i) -> {
+            String name = dialog.getInputtedText();
 
+            if(TextUtils.isEmpty(name)){
+                Toast.makeText(this, "Error name not inserted", Toast.LENGTH_LONG).show();
+                return;
+            }
 
-        builder.setView(view1);
-        builder.setPositiveButton("ok", (dialogInterface, i) -> {
-            listRecord.setName(listName_input.getText().toString());
-            listRecord.setColor(ListColors.values()[color_picker_spinner.getSelectedItemPosition()]);
+            listRecord.setName(name);
+            listRecord.setColor(ListColors.values()[dialog.getSelectedSpinnerPosition()]);
 
             if(db.updateList(listRecord) == 1){
                 lists.set(pos, listRecord);
@@ -111,12 +99,9 @@ public class MainActivity extends AppCompatActivity implements ListSelectListene
             }else{
                 Toast.makeText(this, "Error modifying list", Toast.LENGTH_LONG).show();
             }
-
         });
 
-        dialog = builder.create();
-        dialog.show();
-
+        dialog.create().show();
         return true;
     }
 }

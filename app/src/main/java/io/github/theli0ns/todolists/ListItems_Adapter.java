@@ -45,30 +45,15 @@ public class ListItems_Adapter extends RecyclerView.Adapter<ListItems_Adapter.Vi
         holder.deleteListItem_btn.setOnClickListener(view -> {
             if(MainActivity.db.deleteListItem(listItem)){
                 ListShow_activity.listItems.remove(listItem);
-                ListShow_activity.listItems_adapter.notifyDataSetChanged();
+                this.notifyItemRemoved(position);
             }else{
                 Toast.makeText(context, "Error removing list item", Toast.LENGTH_LONG).show();
             }
         });
 
         holder.state_txtview.setOnClickListener(view -> listItemSelectListener.onItemClicked(listItem));
-        holder.listItemName_txtview.setOnClickListener(view -> showItemText(listItem.getText()));
+        holder.listItemName_txtview.setOnClickListener(view -> new ShowTextDialog(context, null, listItem.getText()).create().show());
         holder.listItemName_txtview.setOnLongClickListener(view -> listItemSelectListener.onItemLongClicked(listItem));
-    }
-
-    public void showItemText(String text){
-        AlertDialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        View v = LayoutInflater.from(context).inflate(R.layout.list_item_text_dialog, null);
-
-        TextView textView = v.findViewById(R.id.ListItemDialog_text);
-        textView.setText(text);
-
-        builder.setView(v);
-        builder.setNeutralButton("Ok", null);
-
-        dialog = builder.create();
-        dialog.show();
     }
 
     @Override

@@ -4,6 +4,7 @@ import static io.github.theli0ns.todolists.MainActivity.db;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -43,37 +44,32 @@ public class ListShow_activity extends AppCompatActivity implements ListItemSele
     }
 
     public void addNewListItem(View v){
-        AlertDialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Enter new list item");
-        View view1 = getLayoutInflater().inflate(R.layout.add_modify_dialog, null);
+        TextnSpinnerDialog dialog = new TextnSpinnerDialog(this, "Enter new list item");
+        dialog.setSpinnerValues(ListItemRecord.States.getNamesArray());
 
-        EditText listItemName_input = view1.findViewById(R.id.dialog_inputText);
+        dialog.setPositiveButton("add", (dialogInterface, i) -> {
+            String name = dialog.getInputtedText();
 
-        Spinner state_picker_spinner = view1.findViewById(R.id.dialog_spinner);
-        state_picker_spinner.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                ListItemRecord.States.getNamesArray()));
+            if(TextUtils.isEmpty(name)){
+                Toast.makeText(this, "Error name not inserted", Toast.LENGTH_LONG).show();
+                return;
+            }
 
-
-        builder.setView(view1);
-        builder.setPositiveButton("add", (dialogInterface, i) -> {
-            ListItemRecord newListItem = new ListItemRecord(list_ID, listItemName_input.getText().toString(),
-                    state_picker_spinner.getSelectedItemPosition());
+            ListItemRecord newListItem = new ListItemRecord(list_ID, name,
+                    dialog.getSelectedSpinnerPosition());
 
             long id = db.addNewListItem(newListItem);
             if(id != -1){
                 newListItem.setID(id);
                 listItems.add(newListItem);
-                listItems_adapter.notifyDataSetChanged();
+                listItems_adapter.notifyItemInserted(listItems.size()-1);
             }else{
                 Toast.makeText(this, "Error adding new list item", Toast.LENGTH_LONG).show();
             }
 
         });
 
-        dialog = builder.create();
-        dialog.show();
+        dialog.create().show();
     }
 
     public static void setList_ID(long list_ID) {
@@ -86,33 +82,35 @@ public class ListShow_activity extends AppCompatActivity implements ListItemSele
 
     @Override
     public void onItemClicked(ListItemRecord listItemRecord) {
+        int pos = listItems.indexOf(listItemRecord);
         listItemRecord.scrollState();
-        listItems_adapter.notifyDataSetChanged();
+        if(db.updateListItem(listItemRecord) == 1){
+            listItems_adapter.notifyItemChanged(pos);
+        }else {
+            Toast.makeText(this, "Error changing state", Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
     public boolean onItemLongClicked(ListItemRecord listItemRecord) {
         int pos = listItems.indexOf(listItemRecord);
 
-        AlertDialog dialog;
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Modify list item");
-        View view1 = getLayoutInflater().inflate(R.layout.add_modify_dialog, null);
+        TextnSpinnerDialog dialog = new TextnSpinnerDialog(this, "Modify list item");
+        dialog.setDefaultText(listItemRecord.getText());
+        dialog.setSpinnerValues(ListItemRecord.States.getNamesArray());
+        dialog.setDefaultSpinnerPosition(listItemRecord.getState());
 
-        EditText listItemName_input = view1.findViewById(R.id.dialog_inputText);
-        listItemName_input.setText(listItemRecord.getText());
+        dialog.setPositiveButton("ok", (dialogInterface, i) -> {
 
-        Spinner state_picker_spinner = view1.findViewById(R.id.dialog_spinner);
-        state_picker_spinner.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_dropdown_item,
-                ListItemRecord.States.getNamesArray()));
-        state_picker_spinner.setSelection(listItemRecord.getState());
+            String name = dialog.getInputtedText();
 
+            if(TextUtils.isEmpty(name)){
+                Toast.makeText(this, "Error name not inserted", Toast.LENGTH_LONG).show();
+                return;
+            }
 
-        builder.setView(view1);
-        builder.setPositiveButton("ok", (dialogInterface, i) -> {
-            listItemRecord.setText(listItemName_input.getText().toString());
-            listItemRecord.setState(state_picker_spinner.getSelectedItemPosition());
+            listItemRecord.setText(name);
+            listItemRecord.setState(dialog.getSelectedSpinnerPosition());
 
             if(db.updateListItem(listItemRecord) == 1){
                 listItems.set(pos, listItemRecord);
@@ -123,9 +121,7 @@ public class ListShow_activity extends AppCompatActivity implements ListItemSele
 
         });
 
-        dialog = builder.create();
-        dialog.show();
-
+        dialog.create().show();
         return true;
     }
 }

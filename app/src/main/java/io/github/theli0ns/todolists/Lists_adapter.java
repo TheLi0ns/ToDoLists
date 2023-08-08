@@ -45,7 +45,7 @@ public class Lists_adapter extends RecyclerView.Adapter<Lists_adapter.ViewHolder
         holder.deleteList_btn.setOnClickListener(view -> {
             if(MainActivity.db.deleteList(list)){
                 MainActivity.lists.remove(list);
-                MainActivity.lists_adapter.notifyDataSetChanged();
+                this.notifyItemRemoved(position);
             }else{
                 Toast.makeText(context, "Error removing list", Toast.LENGTH_LONG).show();
             }

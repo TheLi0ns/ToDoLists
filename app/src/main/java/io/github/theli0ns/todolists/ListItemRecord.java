@@ -82,4 +82,9 @@ public class ListItemRecord {
         state++;
         if(state >= States.values().length) state = 0;
     }
+
+    public void unscrollState(){
+        state--;
+        if(state < 0) state = States.values().length - 1;
+    }
 }
