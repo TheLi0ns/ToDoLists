@@ -2,13 +2,9 @@ package io.github.theli0ns.todolists;
 
 import static io.github.theli0ns.todolists.MainActivity.db;
 
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;

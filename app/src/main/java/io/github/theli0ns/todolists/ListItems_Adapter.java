@@ -1,7 +1,6 @@
 package io.github.theli0ns.todolists;
 
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

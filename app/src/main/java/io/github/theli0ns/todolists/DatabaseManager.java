@@ -18,6 +18,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     @Override
+    public void onConfigure(SQLiteDatabase db) {
+        super.onConfigure(db);
+        db.setForeignKeyConstraintsEnabled(true);
+    }
+
+    @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(DatabaseSchema.Lists.CREATE_STMT);
         sqLiteDatabase.execSQL(DatabaseSchema.ListsItems.CREATE_STMT);
